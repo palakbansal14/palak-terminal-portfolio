@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palak's Terminal Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div id="splash-screen" class="splash-screen">
+        <p>INITIATING PALAK'S TERMINAL...</p>
+        <div class="loader-bar"></div>
+        <p class="fade-out">PRESS ENTER TO SKIP</p>
+    </div>
+    <div class="terminal-container" style="visibility: hidden;">
+        <div class="terminal-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="title">Palak's Terminal - ~</span>
+        </div>
+
+        <div class="terminal-body" id="terminal-output">
+            </div>
+
+        <div class="terminal-input-line">
+            <span class="prompt">~ $</span>
+            <input type="text" id="terminal-input" autofocus>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

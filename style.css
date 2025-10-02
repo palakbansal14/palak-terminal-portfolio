@@ -1,0 +1,224 @@
+/* ... (Existing styles remain the same) ... */
+
+/* 💥 NEW SPLASH SCREEN STYLES 💥 */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it is on top of everything */
+    color: #72ff5e; /* Green text color */
+    font-size: 2em;
+    font-family: 'Fira Code', monospace;
+    text-align: center;
+    transition: opacity 0.5s ease-out; /* For smooth fade out */
+}
+
+.splash-screen.hidden {
+    opacity: 0;
+    pointer-events: none; /* Allows clicks/interaction through the element once hidden */
+}
+
+/* Loading Bar Style */
+.loader-bar {
+    width: 300px;
+    height: 5px;
+    background-color: #1a1a1a;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #72ff5e;
+    animation: load-progress 4s ease-in-out forwards; /* 4 second animation */
+}
+
+@keyframes load-progress {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.splash-screen p.fade-out {
+    font-size: 0.7em;
+    color: #555;
+    margin-top: 15px;
+    animation: fade-text 1.5s infinite alternate;
+}
+
+@keyframes fade-text {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+/* Global Reset and Body Styling */
+body {
+    background-color: #2e3436; /* Dark background for the whole page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Fira Code', monospace; /* The classic developer font */
+}
+
+/* Terminal Container */
+.terminal-container {
+    background-color: #1e1e1e; /* Main terminal background color */
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Subtle green glow */
+    width: 90%;
+    max-width: 800px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Terminal Header (The dots and title bar) */
+.terminal-header {
+    background-color: #3c3c3c;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 0.9em;
+    color: #cccccc;
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.dot.red { background-color: #ff5f56; }
+.dot.yellow { background-color: #ffbd2e; }
+.dot.green { background-color: #27c93f; }
+
+.title {
+    margin-left: 15px;
+}
+
+/* Terminal Body (Where the commands and output appear) */
+.terminal-body {
+    flex-grow: 1; /* Takes up all available space */
+    padding: 15px;
+    overflow-y: auto; /* Allows scrolling */
+    color: #ffffff; /* Default text color */
+    font-size: 1.1em;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Handles line breaks */
+    caret-color: transparent; /* Hide caret in the output area */
+}
+
+/* Specific text styling for colors seen in the image */
+.welcome-line { color: #f9f98f; } /* Yellowish */
+.help-title { color: #8af874; } /* Bright Green */
+.command-name { color: #f0f0f0; margin-right: 15px; display: inline-block; min-width: 100px; } /* White/Light Grey */
+.command-desc { color: #b0b0b0; } /* Grey for description */
+.prompt { color: #72ff5e; margin-right: 8px; } /* Green for the $ sign */
+
+/* Terminal Input Line */
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-top: 1px solid #3c3c3c;
+}
+
+#terminal-input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff; /* User-typed text color */
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1em;
+    flex-grow: 1;
+    caret-color: #72ff5e; /* Green blinking cursor */
+}
+/* ... (Existing global and terminal styles remain the same) ... */
+
+/* 💥 UPDATED SPLASH SCREEN STYLES 💥 */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    color: #72ff5e; /* Green text color */
+    font-size: 2em;
+    font-family: 'Fira Code', monospace;
+    text-align: center;
+    transition: opacity 0.5s ease-out;
+    letter-spacing: 2px; /* A bit of spacing for the main text */
+}
+
+.splash-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* New Blinking Cursor Style */
+.splash-screen .cursor {
+    animation: blink-cursor 1s step-end infinite;
+    display: inline-block;
+    margin-left: 5px; /* Space between text and cursor */
+}
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* New Loader Percentage Style */
+.loader-percentage {
+    font-size: 1.5em;
+    color: #8af874; /* A slightly brighter green for the percentage */
+    margin: 30px 0; /* More space around the percentage */
+    min-width: 100px; /* Ensure it doesn't jump when numbers change */
+}
+
+.splash-screen p.fade-out {
+    font-size: 0.7em;
+    color: #555;
+    margin-top: 25px; /* Adjust spacing */
+    animation: fade-text 1.5s infinite alternate;
+}
+
+@keyframes fade-text {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+/* --------------------------------- */
+
+/* --- OPTIONAL HACKER BLUE THEME --- */
+/* To use this, UNCOMMENT the lines below by removing the '/*' and '*/
+/*
+.terminal-container { box-shadow: 0 0 20px rgba(77, 242, 242, 0.5); }
+.help-title { color: #4df2f2; }
+.prompt { color: #4df2f2; }
+#terminal-input { caret-color: #4df2f2; }
+*/
+/* --------------------------------- */
