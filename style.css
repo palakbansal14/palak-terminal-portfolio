@@ -1,224 +1,246 @@
-/* ... (Existing styles remain the same) ... */
+:root {
+    --background: #0a0a0a;
+    --foreground: #00ff00;
+    --highlight: #00ffff;
+    --bar-bg: #333;
+}
 
-/* 💥 NEW SPLASH SCREEN STYLES 💥 */
-.splash-screen {
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+/* --- Loading Screen --- */
+#loading-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensure it is on top of everything */
-    color: #72ff5e; /* Green text color */
+    z-index: 100;
+    background-color: var(--background);
+}
+
+#loading-text {
     font-size: 2em;
-    font-family: 'Fira Code', monospace;
-    text-align: center;
-    transition: opacity 0.5s ease-out; /* For smooth fade out */
+    color: var(--highlight);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
 }
 
-.splash-screen.hidden {
-    opacity: 0;
-    pointer-events: none; /* Allows clicks/interaction through the element once hidden */
+#progress-bar-container {
+    width: 50%;
+    height: 25px;
+    background-color: var(--bar-bg);
+    border: 1px solid var(--foreground);
+    margin-bottom: 10px;
 }
 
-/* Loading Bar Style */
-.loader-bar {
-    width: 300px;
-    height: 5px;
-    background-color: #1a1a1a;
-    margin: 20px 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.loader-bar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
+#progress-bar {
+    width: 0%;
     height: 100%;
-    background-color: #72ff5e;
-    animation: load-progress 4s ease-in-out forwards; /* 4 second animation */
+    background-color: var(--highlight);
+    transition: width 0.1s linear;
 }
 
-@keyframes load-progress {
-    0% { left: -100%; }
-    100% { left: 100%; }
+#progress-percent {
+    font-size: 1.2em;
+    color: var(--highlight);
+    margin-bottom: 20px;
 }
 
-.splash-screen p.fade-out {
-    font-size: 0.7em;
-    color: #555;
-    margin-top: 15px;
-    animation: fade-text 1.5s infinite alternate;
-}
-
-@keyframes fade-text {
-    0% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-/* Global Reset and Body Styling */
-body {
-    background-color: #2e3436; /* Dark background for the whole page */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    font-family: 'Fira Code', monospace; /* The classic developer font */
-}
-
-/* Terminal Container */
-.terminal-container {
-    background-color: #1e1e1e; /* Main terminal background color */
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Subtle green glow */
-    width: 90%;
-    max-width: 800px;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-/* Terminal Header (The dots and title bar) */
-.terminal-header {
-    background-color: #3c3c3c;
-    padding: 10px 15px;
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+#skip-text {
     font-size: 0.9em;
-    color: #cccccc;
+    color: #888;
 }
 
-.dot {
-    height: 12px;
-    width: 12px;
-    background-color: #bbb;
-    border-radius: 50%;
+/* --- Terminal --- */
+#terminal {
+    display: none;
+    /* Hidden by default */
+    padding: 20px;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.terminal-header {
+    color: var(--highlight);
+    border-bottom: 1px dashed var(--highlight);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#output {
+    white-space: pre-wrap;
+    /* Allows wrapping and respects newlines */
+}
+
+.ascii-art {
+    color: var(--highlight);
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.command-list {
+    margin-top: 10px;
+}
+
+.command-list span {
     display: inline-block;
-    margin-right: 8px;
+    width: 80px;
+    font-weight: bold;
+    color: var(--highlight);
 }
 
-.dot.red { background-color: #ff5f56; }
-.dot.yellow { background-color: #ffbd2e; }
-.dot.green { background-color: #27c93f; }
-
-.title {
-    margin-left: 15px;
-}
-
-/* Terminal Body (Where the commands and output appear) */
-.terminal-body {
-    flex-grow: 1; /* Takes up all available space */
-    padding: 15px;
-    overflow-y: auto; /* Allows scrolling */
-    color: #ffffff; /* Default text color */
-    font-size: 1.1em;
-    line-height: 1.5;
-    white-space: pre-wrap; /* Handles line breaks */
-    caret-color: transparent; /* Hide caret in the output area */
-}
-
-/* Specific text styling for colors seen in the image */
-.welcome-line { color: #f9f98f; } /* Yellowish */
-.help-title { color: #8af874; } /* Bright Green */
-.command-name { color: #f0f0f0; margin-right: 15px; display: inline-block; min-width: 100px; } /* White/Light Grey */
-.command-desc { color: #b0b0b0; } /* Grey for description */
-.prompt { color: #72ff5e; margin-right: 8px; } /* Green for the $ sign */
-
-/* Terminal Input Line */
-.terminal-input-line {
+.prompt-line {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
-    border-top: 1px solid #3c3c3c;
+    margin-top: 10px;
+}
+
+.prompt-line span {
+    color: var(--highlight);
+    margin-right: 10px;
+    font-weight: bold;
 }
 
 #terminal-input {
-    background: none;
+    background: transparent;
     border: none;
-    outline: none;
-    color: #ffffff; /* User-typed text color */
-    font-family: 'Fira Code', monospace;
-    font-size: 1.1em;
+    color: var(--foreground);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1em;
     flex-grow: 1;
-    caret-color: #72ff5e; /* Green blinking cursor */
+    outline: none;
 }
-/* ... (Existing global and terminal styles remain the same) ... */
 
-/* 💥 UPDATED SPLASH SCREEN STYLES 💥 */
-.splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
+/* --- Output Styles --- */
+.output-line {
+    margin-bottom: 5px;
+}
+
+.output-prompt {
+    color: var(--highlight);
+    font-weight: bold;
+}
+
+.output-command {
+    color: var(--foreground);
+}
+
+.error {
+    color: #ff0000;
+}
+
+/* --- Skills --- */
+.skills-container {
+    margin-top: 10px;
+}
+
+.skill-category {
+    font-weight: bold;
+    color: var(--highlight);
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.skill-bar {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
-    color: #72ff5e; /* Green text color */
-    font-size: 2em;
-    font-family: 'Fira Code', monospace;
-    text-align: center;
-    transition: opacity 0.5s ease-out;
-    letter-spacing: 2px; /* A bit of spacing for the main text */
+    margin-bottom: 8px;
 }
 
-.splash-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
+.skill-name {
+    width: 120px;
+    color: var(--foreground);
 }
 
-/* New Blinking Cursor Style */
-.splash-screen .cursor {
-    animation: blink-cursor 1s step-end infinite;
+.bar {
+    width: 300px;
+    height: 15px;
+    background-color: var(--bar-bg);
+    margin-right: 10px;
+    border: 1px solid var(--foreground);
+}
+
+.bar-inner {
+    height: 100%;
+    background-color: var(--highlight);
+    animation: fillBar 1s ease-out forwards;
+}
+
+.skill-percent {
+    color: var(--highlight);
+}
+
+/* Skill bar fill animations */
+@keyframes fillBar {
+    from {
+        width: 0;
+    }
+}
+
+/* --- Projects --- */
+.project {
+    margin-bottom: 15px;
+    border-left: 2px solid var(--highlight);
+    padding-left: 10px;
+}
+
+.project-title {
+    font-weight: bold;
+    color: var(--highlight);
+}
+
+.project-tech {
+    font-size: 0.9em;
+    color: #ccc;
+    margin-top: 5px;
+}
+
+.project-link {
+    font-size: 0.9em;
+    color: var(--highlight);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* --- About --- */
+.typewriter-text {
+    display: inline;
+}
+
+.cursor {
     display: inline-block;
-    margin-left: 5px; /* Space between text and cursor */
+    width: 10px;
+    height: 1.2em;
+    background-color: var(--foreground);
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+    vertical-align: middle;
 }
 
-@keyframes blink-cursor {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
+@keyframes blink {
 
-/* New Loader Percentage Style */
-.loader-percentage {
-    font-size: 1.5em;
-    color: #8af874; /* A slightly brighter green for the percentage */
-    margin: 30px 0; /* More space around the percentage */
-    min-width: 100px; /* Ensure it doesn't jump when numbers change */
-}
+    from,
+    to {
+        background-color: transparent;
+    }
 
-.splash-screen p.fade-out {
-    font-size: 0.7em;
-    color: #555;
-    margin-top: 25px; /* Adjust spacing */
-    animation: fade-text 1.5s infinite alternate;
+    50% {
+        background-color: var(--foreground);
+    }
 }
-
-@keyframes fade-text {
-    0% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-/* --------------------------------- */
-
-/* --- OPTIONAL HACKER BLUE THEME --- */
-/* To use this, UNCOMMENT the lines below by removing the '/*' and '*/
-/*
-.terminal-container { box-shadow: 0 0 20px rgba(77, 242, 242, 0.5); }
-.help-title { color: #4df2f2; }
-.prompt { color: #4df2f2; }
-#terminal-input { caret-color: #4df2f2; }
-*/
-/* --------------------------------- */
