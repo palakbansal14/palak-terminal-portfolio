@@ -1,310 +1,247 @@
-// ===============================
-// Terminal Portfolio Main Script
-// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    const terminal = document.getElementById('terminal');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercent = document.getElementById('progress-percent');
+    const output = document.getElementById('output');
+    const input = document.getElementById('terminal-input');
 
-// --- DOM ELEMENTS ---
-const terminalOutput = document.getElementById('terminal-output');      // Output area for terminal responses
-const terminalInput = document.getElementById('terminal-input');        // Input field for user commands
-const terminalContainer = document.querySelector('.terminal-container');// Main terminal window
-const splashScreen = document.getElementById('splash-screen');          // Splash screen overlay
+    let percent = 0;
+    let loadingInterval = setInterval(updateProgress, 30); // 30ms interval
 
-const SPLASH_DURATION_MS = 4000; // Splash screen duration in milliseconds
+    function updateProgress() {
+        percent++;
+        if (percent > 100) {
+            startTerminal();
+        } else {
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+        }
+    }
 
-// --- COMMANDS DATA ---
-const COMMANDS = {
-    // Format: 'command': [Description, Handler Function]
-    'help': ['See all available commands', handleHelp],
-    'about': ['Some info about me', handleAbout],
-    'resume': ['Open my resume in a new tab', handleResume],
-    'experience': ['Show my work experience', handleExperience],
-    'skills': ['My technical skills', handleSkills],
-    'projects': ['Show my portfolio projects', handleProjects],
-    'social': ['Where you can find me online', handleSocial],
-    'echo': ['Echo a message back to the terminal', handleEcho],
-    'figlet': ['Display text in large ASCII art', handleFiglet],
-    'clear': ['Clear the terminal', handleClear],
-    'pwd': ['Print working directory', handlePwd],
-    'date': ['Display current date and time', handleDate],
-    'welcome': ['Display welcome message', handleWelcome]
-};
+    function startTerminal() {
+        clearInterval(loadingInterval);
+        loadingScreen.style.display = 'none';
+        terminal.style.display = 'block';
+        input.focus();
+        printWelcomeMessage();
+    }
 
-// Welcome message shown on startup
-const WELCOME_MESSAGE = `
-(^o^)! Welcome! Try out some commands:
-
-<span class="command-name">about</span>       - Some info about me
-<span class="command-name">resume</span>      - Open my resume in a new tab
-<span class="command-name">experience</span>  - Show work experience
-<span class="command-name">social</span>      - Where you can find me online
-<span class="command-name">skills</span>      - My technical skills
-<span class="command-name">projects</span>    - View my portfolio projects
-<span class="command-name">help</span>        - See all commands
-`;
-
-// --- COMMAND HANDLERS ---
-
-function handleWelcome() {
-    // Show welcome message
-    output(WELCOME_MESSAGE, 'welcome-line');
-}
-
-function handleHelp() {
-    // List all available commands
-    let outputString = '<span class="help-title">Available commands:</span>\n';
-    const sortedCommands = Object.keys(COMMANDS).sort();
-    sortedCommands.forEach(cmd => {
-        outputString += `<span class="command-name">${cmd}</span> <span class="command-desc">- ${COMMANDS[cmd][0]}</span>\n`;
+    // Skip loading on Enter
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && loadingScreen.style.display !== 'none') {
+            percent = 100; // Force to 100
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+            setTimeout(startTerminal, 100); // Short delay
+        }
     });
-    output(outputString);
-}
 
-function handleAbout() {
-    // Show about info
-    output(`
-Hi there! I'm Palak Bansal, a dedicated Front-End Developer excited about building the future of the web.
-I am currently enhancing my skills as a Software Developer Intern at Source Soft Solutions, Noida.
-My focus is on translating design concepts into beautiful, functional, and user-friendly digital experiences.
-I have hands-on experience in developing automated systems and solutions for agents, combining strong design with efficient functionality.
-I'm always eager to learn new technologies and contribute to challenging projects.
-`);
-}
+    // Handle terminal input
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const command = input.value.trim().toLowerCase();
 
-function handleResume() {
-    // Open resume link in new tab
-    window.open('https://drive.google.com/file/d/1C52I5Kq7fd83yEv6VUONbwI3GvqC7EHq/view?usp=sharing', '_blank');
-    output('Opening resume in a new tab...');
-}
+            // Print the command entered by the user
+            printToOutput(`<div class="output-line"><span class="output-prompt">~$</span> <span class="output-command">${command}</span></div>`);
 
-function handleExperience() {
-    // Show experience info
-    output(`
-[2025 - Present] - Software Developer Intern @ Source Soft Solutions
-    - Gaining practical experience in Full-Stack development and automated systems.
-    - Applying Front-End skills (React, Tailwind) to create robust user interfaces.
-    - Contributing to code review and optimization for improved performance.
-`);
-}
+            if (command) {
+                handleCommand(command);
+            }
 
-function handleSkills() {
-    // Show skills info
-    output(`
-Programming Languages:C, C++, Python, JavaScript, TypeScript, HTML5, CSS3
-Frameworks: React.js, Tailwind CSS, Redux, Material-UI, Bootstrap, Responsive Web Design
-Databases and Tools: MongoDB, MySQL, Redis, Git, GitHub
-AI and Data Science: Natural Language Processing (NLP), Computer Vision, Generative AI, LLaMA-3, Groq API,
-Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn
-Expertise: Full-Stack Development, Front-End Development, Web Scraping, Machine Learning
-`);
-}
-
-function handleProjects() {
-    // Show projects info
-    output(`
-[1] Economic Impact Assessment Platform | Python,Machine Learning, Statistical Analysis GitHub Repository
-• Developed a predictive modeling system using machine learning and Python libraries (scikit-learn, TensorFlow, Pandas)
-to analyze and forecast the impact of climate change on agriculture, energy, and healthcare.
-• Provided data-driven insights and vulnerability assessments to inform evidence-based policy development and promote
-sector-specific adaptation strategies for enhanced resilience.
-• Implementing time series analysis framework using Python (Pandas, NumPy, Scikit-learn) to identify economic patterns
-and create predictive models for forecasting future trends.
-    
-[2] SYNAPSE | Node.js, Express.js, MongoDB, React.js HTML5, CSS3, JavaScript Production Website
-• Engineered a secure, full-stack classroom management system with a dynamic QR code attendance module to eliminate
-proxy attendance, enhancing academic integrity and operational efficiency.
-• Centralized all academic functions into a single, intuitive platform for teachers and students, enabling seamless
-communication, paperless assignment submissions, and secure marks management.
-• Fostered a paperless and eco-friendly environment by digitizing all administrative tasks and a system that promotes
-student accountability and proactivity.
-    `);
-}
-
-function handleSocial() {
-    // Show social links
-    output(`
-LinkedIn: https://www.linkedin.com/in/palakbansal1409/ (Type 'social linkedin')
-GitHub:   https://github.com/palakbansal14    (Type 'social github')
-Email:    palakbansal.tech@email.com         (Type 'social email')
-`);
-}
-
-function handleEcho() {
-    // Default echo usage message
-    output('echo: Missing argument. Usage: echo <message>');
-}
-
-// --- FIGLET ASCII ART GENERATOR ---
-function generateFiglet(text) {
-    // Simple ASCII art for supported characters
-    const chars = {
-        'P': ["███", "█ █", "███", "█  ", "█  "],
-        'A': [" ██", "█ █", "███", "█ █", "█ █"],
-        'L': ["█  ", "█  ", "█  ", "█  ", "███"],
-        'K': ["█ █", "█ █", "██ ", "█ █", "█ █"],
-        'D': ["██ ", "█ █", "█ █", "█ █", "██ "],
-        'E': ["███", "█  ", "██ ", "█  ", "███"],
-        'V': ["█ █", "█ █", "█ █", " █ ", " █ "],
-        'R': ["██ ", "█ █", "██ ", "█ █", "█ █"],
-        'O': ["██ ", "█ █", "█ █", "█ █", "██ "],
-        'S': ["███", "█  ", "██ ", "  █", "███"],
-        'I': ["███", " █ ", " █ ", " █ ", "███"],
-        'M': ["█ █", "███", "█ █", "█ █", "█ █"],
-        'N': ["█ █", "███", "█ █", "█ █", "█ █"],
-        'T': ["███", " █ ", " █ ", " █ ", " █ "],
-        'C': ["███", "█  ", "█  ", "█  ", "███"],
-        'H': ["█ █", "█ █", "███", "█ █", "█ █"],
-        'G': ["███", "█  ", "█ █", "█ █", "███"],
-        'U': ["█ █", "█ █", "█ █", "█ █", "███"],
-        'B': ["██ ", "█ █", "██ ", "█ █", "██ "],
-        'Y': ["█ █", " █ ", " █ ", " █ ", " █ "],
-        '.': ["   ", "   ", "   ", "   ", " █ "],
-        '-': ["   ", "   ", "███", "   ", "   "],
-        '!': [" █ ", " █ ", " █ ", "   ", " █ "],
-        ' ': ["   ", "   ", "   ", "   ", "   "]
-    };
-
-    const lines = ["", "", "", "", ""];
-    const upperText = text.toUpperCase();
-
-    // Build ASCII art line by line
-    for (let i = 0; i < upperText.length; i++) {
-        const char = upperText[i];
-        const art = chars[char] || chars[' '];
-        for (let j = 0; j < 5; j++) {
-            lines[j] += art[j] + " ";
+            input.value = '';
+            scrollToBottom();
         }
-    }
-    return lines.join('\n');
-}
-
-function handleFiglet() {
-    // Default figlet usage message
-    output('figlet: Missing argument. Usage: figlet <TEXT>');
-}
-
-function handleClear() {
-    // Clear terminal output
-    terminalOutput.innerHTML = '';
-}
-
-function handlePwd() {
-    // Print working directory
-    output('/home/palak/portfolio');
-}
-
-function handleDate() {
-    // Print current date and time
-    output(new Date().toLocaleString());
-}
-
-// --- OUTPUT LOGIC ---
-function output(text, className = '') {
-    // Split text into lines and output each line as a <p>
-    const lines = text.trim().split('\n');
-    lines.forEach(line => {
-        const p = document.createElement('p');
-        p.className = className;
-        p.innerHTML = line;
-        terminalOutput.appendChild(p);
     });
-    // Scroll to bottom
-    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-}
 
-// --- COMMAND PROCESSOR ---
-function processCommand(command) {
-    // Show the entered command in the terminal
-    output(`<span class="prompt">~ $</span> ${command}`);
+    // Refocus input on click anywhere in terminal
+    terminal.addEventListener('click', () => {
+        input.focus();
+    });
 
-    const cmd = command.toLowerCase().trim();
-    const parts = cmd.split(' ');
-    const mainCommand = parts[0];
-    const subCommand = parts[1];
+    function handleCommand(command) {
+        switch (command) {
+            case 'help':
+                printWelcomeMessage(false); // false = don't print ASCII art again
+                break;
+            case 'about':
+                printAbout();
+                break;
+            case 'skills':
+                printSkills();
+                break;
+            case 'projects':
+                printProjects();
+                break;
+            case 'resume':
+                printResume();
+                break;
+            case 'social':
+                printSocial();
+                break;
+            case 'clear':
+                output.innerHTML = '';
+                break;
+            case 'matrix':
+            case 'hack':
+            case 'coffee':
+            case 'nuke':
+                printToOutput(`Nice try, but this is a portfolio, not a movie set. 😉`);
+                break;
+            default:
+                printToOutput(`<div class="error">Command not found: ${command}. Type 'help' for a list of commands.</div>`);
+        }
+    }
 
-    // Handle 'clear' command
-    if (cmd === 'clear') { handleClear(); return; }
+    function printWelcomeMessage(withArt = true) {
+        // ---!!! YAHAN BADLAAV KIYA GAYA HAI !!!---
+        const art = `
+<pre class="ascii-art">
+   ██████╗   █████╗   ██╗      █████╗   ██╗  ██╗
+   ██╔══██╗ ██╔══██╗  ██║     ██╔══██╗  ██║ ██╔╝
+   ██████╔╝ ███████║  ██║     ███████║  █████╔╝ 
+   ██╔═══╝  ██╔══██║  ██║     ██╔══██║  ██╔═██╗ 
+   ██║      ██║  ██║  ███████╗██║  ██║  ██║  ██╗
+   ╚═╝      ╚═╝  ╚═╝  ╚══════╝╚═╝  ╚═╝  ╚═╝  ╚═╝
+</pre>
+        `;
 
-    // Handle 'social' subcommands
-    if (mainCommand === 'social' && subCommand) {
-        let url;
-        if (subCommand === 'linkedin') { url = 'https://www.linkedin.com/in/palakbansal1409/'; }
-        else if (subCommand === 'github') { url = 'https://github.com/palakbansal14'; }
-        else if (subCommand === 'email') { url = 'mailto:palakbansal.tech@email.com'; }
+        const welcomeText = `
+Welcome! Try out some commands:
+<div class="command-list">
+<span>about</span>   - Some info about me
+<span>resume</span>  - Open my resume
+<span>skills</span>  - Show work experience
+<span>projects</span>- View my projects
+<span>social</span>  - Find me online
+<span>help</span>    - See all commands
+<span>clear</span>   - Clear the terminal screen
+</div>
+<div style="margin-top: 10px;">Try: matrix, hack, coffee, nuke for fun!</div>
+        `;
 
-        if (url) {
-            window.open(url, '_blank');
-            output(`Opening ${subCommand} in a new tab...`);
+        if (withArt) {
+            printToOutput(art + welcomeText);
         } else {
-            output(`social: invalid argument '${subCommand}'. Try 'social linkedin', 'social github', or 'social email'.`);
+            printToOutput(welcomeText);
         }
-        return;
     }
 
-    // Handle 'echo' command
-    if (mainCommand === 'echo') {
-        const message = command.substring(mainCommand.length).trim();
-        if (message) {
-            output(message);
-        } else {
-            handleEcho();
-        }
-        return;
+    function printAbout() {
+        const aboutText = "Hi there! I'm Palak Bansal, a dedicated Front-End Developer excited about building the future of the web. \nI am currently enhancing my skills as a Software Developer Intern at Source Soft Solutions, Noida.";
+        typeWriter("about", aboutText);
     }
 
-    // Handle 'figlet' command
-    if (mainCommand === 'figlet') {
-        const textToDisplay = command.substring(mainCommand.length).trim();
-        if (textToDisplay) {
-            const figletArt = generateFiglet(textToDisplay);
-            output(figletArt);
-        } else {
-            handleFiglet();
-        }
-        return;
+    function printSkills() {
+        const skillsHTML = `
+<div class="skills-container">
+    <div class="skill-category">Frameworks:</div>
+    <div class="skill-bar"><span class="skill-name">React.js</span><div class="bar"><div class="bar-inner" style="width: 85%;"></div></div><span class="skill-percent">85%</span></div>
+    <div class="skill-bar"><span class="skill-name">Node.js</span><div class="bar"><div class="bar-inner" style="width: 70%;"></div></div><span class="skill-percent">70%</span></div>
+    <div class="skill-bar"><span class="skill-name">Express.js</span><div class="bar"><div class="bar-inner" style="width: 70%;"></div></div><span class="skill-percent">70%</span></div>
+    <div class="skill-bar"><span class="skill-name">Tailwind CSS</span><div class="bar"><div class="bar-inner" style="width: 90%;"></div></div><span class="skill-percent">90%</span></div>
+    <div class="skill-bar"><span class="skill-name">Redux</span><div class="bar"><div class="bar-inner" style="width: 80%;"></div></div><span class="skill-percent">80%</span></div>
+    <div class="skill-bar"><span class="skill-name">Material-UI</span><div class="bar"><div class="bar-inner" style="width: 75%;"></div></div><span class="skill-percent">75%</span></div>
+    <div class="skill-bar"><span class="skill-name">Bootstrap</span><div class="bar"><div class="bar-inner" style="width: 85%;"></div></div><span class="skill-percent">85%</span></div>
+
+    <div class="skill-category">Tools:</div>
+    <div class="skill-bar"><span class="skill-name">MySQL</span><div class="bar"><div class="bar-inner" style="width: 70%;"></div></div><span class="skill-percent">70%</span></div>
+    <div class="skill-bar"><span class="skill-name">MongoDB</span><div class="bar"><div class="bar-inner" style="width: 75%;"></div></div><span class="skill-percent">75%</span></div>
+    <div class="skill-bar"><span class="skill-name">Git/GitHub</span><div class="bar"><div class="bar-inner" style="width: 85%;"></div></div><span class="skill-percent">85%</span></div>
+    <div class="skill-bar"><span class="skill-name">Redis</span><div class="bar"><div class="bar-inner" style="width: 65%;"></div></div><span class="skill-percent">65%</span></div>
+
+    <div class="skill-category">AI/Data:</div>
+    <div class="skill-bar"><span class="skill-name">Machine Learning</span><div class="bar"><div class="bar-inner" style="width: 75%;"></div></div><span class="skill-percent">75%</span></div>
+    <div class="skill-bar"><span class="skill-name">NLP</span><div class="bar"><div class="bar-inner" style="width: 70%;"></div></div><span class="skill-percent">70%</span></div>
+    <div class="skill-bar"><span class="skill-name">Computer Vision</span><div class="bar"><div class="bar-inner" style="width: 65%;"></div></div><span class="skill-percent">65%</span></div>
+    <div class="skill-bar"><span class="skill-name">Pandas/NumPy</span><div class="bar"><div class="bar-inner" style="width: 80%;"></div></div><span class="skill-percent">80%</span></div>
+</div>
+        `;
+        printToOutput(skillsHTML);
     }
 
-    // Handle single-word commands
-    if (COMMANDS.hasOwnProperty(mainCommand)) {
-        COMMANDS[mainCommand][1]();
-    } else {
-        output(`bash: ${mainCommand}: command not found. Type 'help' to see available commands.`);
-    }
-}
+    function printProjects() {
+        const projectsHTML = `
+<div class="project">
+    <div class="project-title">[1] Economic Impact Assessment Platform</div>
+    <div class="project-desc">Developed a predictive modeling system using machine learning and Python libraries (scikit-learn, TensorFlow, Pandas) to analyze and forecast the impact of climate change on agriculture, energy, and healthcare.</div>
+    <div class="project-tech">Technologies: Python, Machine Learning, TensorFlow, Pandas, Statistical Analysis</div>
+    <div class="project-link" onclick="openLink('https://github.com/palakbansal14')">Link: https://github.com/palakbansal14</div>
+</div>
 
-// --- INPUT EVENT HANDLER ---
-terminalInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        const command = terminalInput.value;
-        if (command) {
-            processCommand(command);
+<div class="project">
+    <div class="project-title">[2] SYNAPSE - Classroom Management System</div>
+    <div class="project-desc">Engineered a secure, full-stack classroom management system with dynamic QR code attendance module to eliminate proxy attendance, enhancing academic integrity and operational efficiency.</div>
+    <div class="project-tech">Technologies: Node.js, Express.js, MongoDB, React.js, HTML5, CSS3</div>
+    <div class="project-link" onclick="openLink('https://github.com/palakbansal14')">Link: https://github.com/palakbansal14</div>
+</div>
+        `;
+        printToOutput(projectsHTML);
+    }
+
+    function printResume() {
+        printToOutput("Opening resume in a new tab...");
+        // ---!!! IMPORTANT !!!---
+        // ---!!! Apni resume ka link yahan daalein !!!---
+        window.open('YOUR_RESUME_LINK.pdf', '_blank');
+    }
+
+    function printSocial() {
+        const socialHTML = `
+Find me online:
+<div class="command-list">
+<span>GitHub</span> - <span class="project-link" onclick="openLink('https://github.com/palakbansal14')">github.com/palakbansal14</span>
+<span>LinkedIn</span> - <span class="project-link" onclick="openLink('https://linkedin.com/in/palakbansal14')">linkedin.com/in/palakbansal14</span>
+</div>
+        `;
+        printToOutput(socialHTML);
+    }
+
+    // --- Helper Functions ---
+
+    // Function to open links from generated HTML
+    window.openLink = function (url) {
+        window.open(url, '_blank');
+    }
+
+    // Typewriter effect
+    let typeWriterIdCounter = 0;
+    function typeWriter(elementIdPrefix, text) {
+        typeWriterIdCounter++;
+        const uniqueId = `${elementIdPrefix}-${typeWriterIdCounter}`;
+        printToOutput(`<div class="output-line"><span class="typewriter-text" id="${uniqueId}"></span><span class="cursor"></span></div>`);
+
+        const element = document.getElementById(uniqueId);
+        const cursor = element.nextElementSibling;
+        let i = 0;
+        const speed = 30; // 30ms
+
+        function type() {
+            if (i < text.length) {
+                // Handle newlines
+                if (text.charAt(i) === '\n') {
+                    element.innerHTML += '<br>';
+                } else {
+                    element.innerHTML += text.charAt(i);
+                }
+                i++;
+                scrollToBottom();
+                setTimeout(type, speed);
+            } else {
+                // Typing finished, remove cursor
+                if (cursor) {
+                    cursor.remove();
+                }
+            }
         }
-        terminalInput.value = '';
+        type();
+    }
+
+    function printToOutput(html) {
+        output.innerHTML += html;
+    }
+
+    function scrollToBottom() {
+        terminal.scrollTop = terminal.scrollHeight;
     }
 });
-
-// --- SPLASH SCREEN & INITIAL BOOT HANDLER ---
-function hideSplashAndStartTerminal() {
-    // Fade out splash screen
-    splashScreen.classList.add('hidden');
-    // Show terminal window
-    terminalContainer.style.visibility = 'visible';
-    // Startup sequence
-    const today = new Date().toDateString();
-    output(`Starting new session with Palak Bansal`);
-    output(`Last update: ${today}`);
-    output('');
-    handleWelcome();
-    // Focus input field
-    terminalInput.focus();
-}
-
-// --- PAGE LOAD LOGIC ---
-// Automatically hide splash after SPLASH_DURATION_MS
-const timer = setTimeout(hideSplashAndStartTerminal, SPLASH_DURATION_MS);
-
-// Allow user to skip splash by pressing ENTER anywhere
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        clearTimeout(timer); // Cancel auto-timer
-        hideSplashAndStartTerminal();
-    }
-}, { once: true }); // Only run once
