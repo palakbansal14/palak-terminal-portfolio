@@ -183,7 +183,7 @@ Welcome! Try out some commands:
         printToOutput("Opening resume in a new tab...");
         // ---!!! IMPORTANT !!!---
         // ---!!! Apni resume ka link yahan daalein !!!---
-        window.open('YOUR_RESUME_LINK.pdf', '_blank');
+        window.open('https://drive.google.com/file/d/1mmrWVNUu6Jq_EirU492TEAbt6Y3CUoMO/view?usp=drive_link', '_blank');
     }
 
     function printSocial() {
@@ -245,3 +245,4 @@ Find me online:
         terminal.scrollTop = terminal.scrollHeight;
     }
 });
+
